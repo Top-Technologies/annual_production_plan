@@ -29,4 +29,4 @@ class AnnualProductionPlanLine(models.Model):
                     downtime += sum(rec.x_studio_downtimemin for rec in mo.x_studio_one2many_field_RcsDL if hasattr(rec, 'x_studio_downtimemin'))
 
             line.actual_quantity = actual_qty
-            line.achievement = (actual_qty / line.planned_quantity * 100) if line.planned_quantity > 0 else 0
+            line.achievement = (actual_qty / line.planned_quantity) if line.planned_quantity > 0 else 0

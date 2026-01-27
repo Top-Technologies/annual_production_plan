@@ -11,6 +11,9 @@
                 <field name="state"/>
                 <field name="start_date"/>
                 <field name="end_date"/>
+                <field name="total_planned_qty" optional="hide"/>
+                <field name="total_actual_qty" optional="hide"/>
+                <field name="total_achievement" widget="percentage" optional="hide"/>
                 <field name="daily_production_plan"/>
             </list>
         </field>
@@ -47,6 +50,11 @@
                             <field name="daily_production_plan"/>
                         </group>
                     </group>
+                    <group string="Summary Totals">
+                        <field name="total_planned_qty" readonly="1"/>
+                        <field name="total_actual_qty" readonly="1"/>
+                        <field name="total_achievement" widget="percentage" readonly="1"/>
+                    </group>
 
                     <notebook>
                         <page string="Daily Plan">
@@ -55,7 +63,7 @@
                                     <field name="date"/>
                                     <field name="planned_quantity"/>
                                     <field name="actual_quantity"/>
-                                    <field name="achievement"/>
+                                    <field name="achievement" widget="percentage"/>
                                     <field name="remark"/>
                                 </list>
                             </field>
