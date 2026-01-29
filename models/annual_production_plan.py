@@ -63,6 +63,27 @@ class AnnualProductionPlan(models.Model):
         string='Daily Plans'
     )
 
+    #FILTERS
+    filter_start_date = fields.Date(string="Show From")
+    filter_end_date = fields.Date(string="Show To")
+
+    filtered_planned_qty = fields.Float(
+    string="Filtered Planned Qty",
+    compute="_compute_filtered_totals"
+    )
+
+    filtered_actual_qty = fields.Float(
+        string="Filtered Actual Qty",
+        compute="_compute_filtered_totals"
+    )
+
+    filtered_achievement = fields.Float(
+        string="Filtered Achievement (%)",
+        compute="_compute_filtered_totals"
+    )
+
+
+
     # TOTALS
     total_planned_qty = fields.Float(
         string="Total Planned Quantity",
@@ -90,6 +111,35 @@ class AnnualProductionPlan(models.Model):
             rec.total_planned_qty = planned
             rec.total_actual_qty = actual
             rec.total_achievement = (actual / planned) if planned else 0.0
+
+
+    @api.depends('line_ids.planned_quantity', 'line_ids.actual_quantity',
+             'filter_start_date', 'filter_end_date')
+    def _compute_filtered_totals(self):
+        for rec in self:
+            lines = rec.line_ids
+
+            if rec.filter_start_date:
+                lines = lines.filtered(lambda l: l.date >= rec.filter_start_date)
+            if rec.filter_end_date:
+                lines = lines.filtered(lambda l: l.date <= rec.filter_end_date)
+
+            planned = sum(lines.mapped('planned_quantity'))
+            actual = sum(lines.mapped('actual_quantity'))
+
+            rec.filtered_planned_qty = planned
+            rec.filtered_actual_qty = actual
+            rec.filtered_achievement = (actual / planned) if planned else 0.0
+
+    @api.onchange('filter_start_date', 'filter_end_date')
+    def _onchange_filter_dates(self):
+        domain = []
+        if self.filter_start_date:
+            domain.append(('date', '>=', self.filter_start_date))
+        if self.filter_end_date:
+            domain.append(('date', '<=', self.filter_end_date))
+        return {'domain': {'line_ids': domain}}
+
 
     # VALIDATION
     @api.constrains('start_date', 'end_date')

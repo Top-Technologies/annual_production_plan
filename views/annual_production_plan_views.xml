@@ -1,4 +1,5 @@
 <odoo>
+
     <!-- Tree view -->
     <record id="view_annual_production_plan_tree" model="ir.ui.view">
         <field name="name">annual.production.plan.tree</field>
@@ -7,15 +8,90 @@
             <list string="Annual Production Plans">
                 <field name="name"/>
                 <field name="product_id"/>
-                <field name="planned_by_id"/>
+                <field name="planned_by_id" optional="show"/>
                 <field name="state"/>
-                <field name="start_date"/>
-                <field name="end_date"/>
+                <field name="start_date" optional="hide"/>
+                <field name="end_date" optional="hide"/>
                 <field name="total_planned_qty" optional="hide"/>
                 <field name="total_actual_qty" optional="hide"/>
                 <field name="total_achievement" widget="percentage" optional="hide"/>
-                <field name="daily_production_plan"/>
+                <field name="filter_start_date" optional="show"/>
+                <field name="filter_end_date" optional="show"/>
+                <field name="filtered_planned_qty" optional="show"/>
+                <field name="filtered_actual_qty" optional="show"/>
+                <field name="filtered_achievement" widget="percentage" optional="show"/>
+                <field name="daily_production_plan" optional="show" />
             </list>
+        </field>
+    </record>
+
+    <!-- line tree view -->
+    <record id="view_annual_production_plan_line_tree" model="ir.ui.view">
+        <field name="name">annual.production.plan.line.tree</field>
+        <field name="model">annual.production.plan.line</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date"/>
+                <field name="planned_quantity"/>
+                <field name="actual_quantity"/>
+                <field name="achievement" widget="percentage"/>
+                <field name="remark"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- plan pivot -->
+    <record id="view_annual_production_plan_pivot" model="ir.ui.view">
+        <field name="name">annual.production.plan.pivot</field>
+        <field name="model">annual.production.plan</field>
+        <field name="arch" type="xml">
+            <pivot string="Annual Production Analysis">
+                <field name="product_id" type="row"/>
+                <field name="company_id" type="row"/>
+                <field name="total_planned_qty" type="measure"/>
+                <field name="total_actual_qty" type="measure"/>
+                <field name="total_achievement" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- linie pivot -->
+    <record id="view_annual_production_plan_line_pivot" model="ir.ui.view">
+        <field name="name">annual.production.plan.line.pivot</field>
+        <field name="model">annual.production.plan.line</field>
+        <field name="arch" type="xml">
+            <pivot string="Production Analysis">
+                <field name="date" type="row"/>
+                <field name="plan_id" type="row"/>
+                <field name="planned_quantity" type="measure"/>
+                <field name="actual_quantity" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- plan graph -->
+    <record id="view_annual_production_plan_graph" model="ir.ui.view">
+        <field name="name">annual.production.plan.graph</field>
+        <field name="model">annual.production.plan</field>
+        <field name="arch" type="xml">
+            <graph string="Annual Production Graph" type="bar">
+                <field name="product_id" type="row"/>
+                <field name="total_planned_qty" type="measure"/>
+                <field name="total_actual_qty" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- line graph -->
+    <record id="view_annual_production_plan_line_graph" model="ir.ui.view">
+        <field name="name">annual.production.plan.line.graph</field>
+        <field name="model">annual.production.plan.line</field>
+        <field name="arch" type="xml">
+            <graph string="Production Analysis" type="bar">
+                <field name="date" type="row"/>
+                <field name="planned_quantity" type="measure"/>
+                <field name="actual_quantity" type="measure"/>
+            </graph>
         </field>
     </record>
 
@@ -26,6 +102,11 @@
         <field name="arch" type="xml">
             <form string="Annual Production Plan">
                 <header>
+                    <button name="%(action_annual_plan_line_analysis)d"
+                        type="action"
+                        string="Analysis"
+                        class="oe_stat_button"
+                        icon="fa-bar-chart"/>
                     <button name="action_confirm" type="object" string="Confirm" class="btn-primary"
                         modifiers="{'invisible': [('state', '!=', 'draft')]}"/>
                     <button name="action_approve" type="object" string="Approve" class="btn-success"
@@ -49,13 +130,29 @@
                             <field name="end_date"/>
                             <field name="daily_production_plan"/>
                         </group>
+                        <!-- <group string="Daily Plan Filter" col="4">
+                            <field name="filter_start_date"/>
+                            <field name="filter_end_date"/>
+                        </group> -->
+                        
                     </group>
-                    <group string="Summary Totals">
-                        <field name="total_planned_qty" readonly="1"/>
-                        <field name="total_actual_qty" readonly="1"/>
-                        <field name="total_achievement" widget="percentage" readonly="1"/>
-                    </group>
+                    <group col="3">
+                        <group string="Daily Plan Filter">
+                            <field name="filter_start_date"/>
+                            <field name="filter_end_date"/>
+                        </group>
 
+                        <group string="Filtered Summary">
+                            <field name="filtered_planned_qty" readonly="1"/>
+                            <field name="filtered_actual_qty" readonly="1"/>
+                            <field name="filtered_achievement" widget="percentage" readonly="1"/>
+                        </group>
+                        <group string="Summary Totals">
+                            <field name="total_planned_qty" readonly="1"/>
+                            <field name="total_actual_qty" readonly="1"/>
+                            <field name="total_achievement" widget="percentage" readonly="1"/>
+                        </group>
+                    </group>
                     <notebook>
                         <page string="Daily Plan">
                             <field name="line_ids">
@@ -80,8 +177,15 @@
     <record id="action_annual_production_plan" model="ir.actions.act_window">
         <field name="name">Annual Production Plans</field>
         <field name="res_model">annual.production.plan</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">list,form,pivot,graph</field>
         <field name="view_id" ref="view_annual_production_plan_tree"/>
+    </record>
+    
+    <record id="action_annual_plan_line_analysis" model="ir.actions.act_window">
+        <field name="name">Analysis</field>
+        <field name="res_model">annual.production.plan.line</field>
+        <field name="view_mode">list,pivot,graph</field>
+        <field name="domain">[('plan_id','=',active_id)]</field>
     </record>
 
     <!-- Menu -->
@@ -89,4 +193,5 @@
               name="Annual Production Plans"
               parent="mrp.mrp_planning_menu_root"
               action="action_annual_production_plan"/>
+    
 </odoo>
