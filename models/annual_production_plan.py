@@ -82,6 +82,11 @@ class AnnualProductionPlan(models.Model):
         compute="_compute_filtered_totals"
     )
 
+    filtered_difference = fields.Float(
+        string="Filtered Difference",
+        compute="_compute_filtered_totals"
+    )
+
 
 
     # TOTALS
@@ -102,6 +107,11 @@ class AnnualProductionPlan(models.Model):
         compute="_compute_totals",
         store=True
     )
+    total_difference = fields.Float(
+        string="Total Difference",
+        compute="_compute_totals",
+        store=True
+    )
 
     @api.depends('line_ids.planned_quantity', 'line_ids.actual_quantity')
     def _compute_totals(self):
@@ -111,6 +121,7 @@ class AnnualProductionPlan(models.Model):
             rec.total_planned_qty = planned
             rec.total_actual_qty = actual
             rec.total_achievement = (actual / planned) if planned else 0.0
+            rec.total_difference = (actual - planned) if planned else 0.0
 
 
     @api.depends('line_ids.planned_quantity', 'line_ids.actual_quantity',
@@ -130,6 +141,7 @@ class AnnualProductionPlan(models.Model):
             rec.filtered_planned_qty = planned
             rec.filtered_actual_qty = actual
             rec.filtered_achievement = (actual / planned) if planned else 0.0
+            rec.filtered_difference = (actual - planned) if planned else 0.0
 
     @api.onchange('filter_start_date', 'filter_end_date')
     def _onchange_filter_dates(self):

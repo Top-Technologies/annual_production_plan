@@ -15,11 +15,13 @@
                 <field name="total_planned_qty" optional="hide"/>
                 <field name="total_actual_qty" optional="hide"/>
                 <field name="total_achievement" widget="percentage" optional="hide"/>
+                <field name="total_difference" optional="hide"/>
                 <field name="filter_start_date" optional="show"/>
                 <field name="filter_end_date" optional="show"/>
                 <field name="filtered_planned_qty" optional="show"/>
                 <field name="filtered_actual_qty" optional="show"/>
                 <field name="filtered_achievement" widget="percentage" optional="show"/>
+                <field name="filtered_difference" optional="show"/>
                 <field name="daily_production_plan" optional="show" />
             </list>
         </field>
@@ -63,6 +65,7 @@
             <pivot string="Production Analysis">
                 <field name="date" type="row"/>
                 <field name="plan_id" type="row"/>
+                <field name="remark" type="row"/>
                 <field name="planned_quantity" type="measure"/>
                 <field name="actual_quantity" type="measure"/>
             </pivot>
@@ -146,11 +149,13 @@
                             <field name="filtered_planned_qty" readonly="1"/>
                             <field name="filtered_actual_qty" readonly="1"/>
                             <field name="filtered_achievement" widget="percentage" readonly="1"/>
+                            <field name="filtered_difference" readonly="1"/>
                         </group>
                         <group string="Summary Totals">
                             <field name="total_planned_qty" readonly="1"/>
                             <field name="total_actual_qty" readonly="1"/>
                             <field name="total_achievement" widget="percentage" readonly="1"/>
+                            <field name="total_difference" readonly="1"/>
                         </group>
                     </group>
                     <notebook>
@@ -161,6 +166,7 @@
                                     <field name="planned_quantity"/>
                                     <field name="actual_quantity"/>
                                     <field name="achievement" widget="percentage"/>
+                                    <field name="difference"/>
                                     <field name="remark"/>
                                 </list>
                             </field>

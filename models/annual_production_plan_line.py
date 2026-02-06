@@ -9,6 +9,7 @@ class AnnualProductionPlanLine(models.Model):
     planned_quantity = fields.Float(required=True)
     actual_quantity = fields.Float(readonly=True, compute='compute_actuals', store=True)
     achievement = fields.Float(readonly=True, compute='compute_actuals', store=True)
+    difference = fields.Float(readonly=True, compute='compute_actuals', store=True)
     remark = fields.Text()
     invisible_id = fields.Char(default=lambda self: self.env['ir.sequence'].next_by_code('plan.line.invisible'))
 
@@ -30,3 +31,4 @@ class AnnualProductionPlanLine(models.Model):
 
             line.actual_quantity = actual_qty
             line.achievement = (actual_qty / line.planned_quantity) if line.planned_quantity > 0 else 0
+            line.difference = (actual_qty - line.planned_quantity) if line.planned_quantity > 0 else 0
