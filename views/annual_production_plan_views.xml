@@ -37,7 +37,9 @@
                 <field name="planned_quantity"/>
                 <field name="actual_quantity"/>
                 <field name="achievement" widget="percentage"/>
+                <field name="difference"/>
                 <field name="remark"/>
+            
             </list>
         </field>
     </record>
@@ -68,6 +70,7 @@
                 <field name="remark" type="row"/>
                 <field name="planned_quantity" type="measure"/>
                 <field name="actual_quantity" type="measure"/>
+                <field name="difference" type="measure"/>
             </pivot>
         </field>
     </record>
@@ -94,6 +97,7 @@
                 <field name="date" type="row"/>
                 <field name="planned_quantity" type="measure"/>
                 <field name="actual_quantity" type="measure"/>
+                <field name="difference" type="measure"/>
             </graph>
         </field>
     </record>

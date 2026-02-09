@@ -14,6 +14,7 @@ class AnnualProductionPlan(models.Model):
         # domain="[('type', '=', 'product')]",
         required=True
     )
+    
     planned_by_id = fields.Many2one(
         'res.users', 
         default=lambda self: self.env.user,
