@@ -1,5 +1,21 @@
 <odoo>
 
+
+    <!-- Action -->
+    <record id="action_annual_production_plan" model="ir.actions.act_window">
+        <field name="name">Annual Production Plans</field>
+        <field name="res_model">annual.production.plan</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <!-- <field name="view_id" ref="view_annual_production_plan_tree"/> -->
+    </record>
+    
+    <record id="action_annual_plan_line_analysis" model="ir.actions.act_window">
+        <field name="name">Analysis</field>
+        <field name="res_model">annual.production.plan.line</field>
+        <field name="view_mode">list,pivot,graph</field>
+        <field name="domain">[('plan_id','=',active_id)]</field>
+    </record>
+
     <!-- Tree view -->
     <record id="view_annual_production_plan_tree" model="ir.ui.view">
         <field name="name">annual.production.plan.tree</field>
@@ -183,20 +199,6 @@
         </field>
     </record>
 
-    <!-- Action -->
-    <record id="action_annual_production_plan" model="ir.actions.act_window">
-        <field name="name">Annual Production Plans</field>
-        <field name="res_model">annual.production.plan</field>
-        <field name="view_mode">list,form,pivot,graph</field>
-        <field name="view_id" ref="view_annual_production_plan_tree"/>
-    </record>
-    
-    <record id="action_annual_plan_line_analysis" model="ir.actions.act_window">
-        <field name="name">Analysis</field>
-        <field name="res_model">annual.production.plan.line</field>
-        <field name="view_mode">list,pivot,graph</field>
-        <field name="domain">[('plan_id','=',active_id)]</field>
-    </record>
 
     <!-- Menu -->
     <menuitem id="menu_annual_production_plan"
