@@ -28,17 +28,17 @@
                 <field name="state"/>
                 <field name="start_date" optional="hide"/>
                 <field name="end_date" optional="hide"/>
-                <field name="total_planned_qty" optional="hide"/>
-                <field name="total_actual_qty" optional="hide"/>
+                <field name="total_planned_qty" optional="hide" sum="Total Planned Quantity"/>
+                <field name="total_actual_qty" optional="hide" sum="Total Actual Quantity"/>
                 <field name="total_achievement" widget="percentage" optional="hide"/>
-                <field name="total_difference" optional="hide"/>
+                <field name="total_difference" optional="hide" sum="Total Difference"/>
                 <field name="filter_start_date" optional="show"/>
                 <field name="filter_end_date" optional="show"/>
-                <field name="filtered_planned_qty" optional="show"/>
-                <field name="filtered_actual_qty" optional="show"/>
+                <field name="filtered_planned_qty" optional="show" sum="Filtered Planned Quantity"/>
+                <field name="filtered_actual_qty" optional="show" sum="Filtered Actual Quantity"/>
                 <field name="filtered_achievement" widget="percentage" optional="show"/>
-                <field name="filtered_difference" optional="show"/>
-                <field name="daily_production_plan" optional="show" />
+                <field name="filtered_difference" optional="show" sum="Filtered Difference"/>
+                <field name="daily_production_plan" optional="show" sum="Daily Production Plan Total"/>
             </list>
         </field>
     </record>
@@ -50,10 +50,10 @@
         <field name="arch" type="xml">
             <list>
                 <field name="date"/>
-                <field name="planned_quantity"/>
-                <field name="actual_quantity"/>
+                <field name="planned_quantity" sum="Total Planned Quantity"/>
+                <field name="actual_quantity" sum="Total Actual Quantity"/>
                 <field name="achievement" widget="percentage"/>
-                <field name="difference"/>
+                <field name="difference" sum="Total Difference"/>
                 <field name="remark"/>
             
             </list>
@@ -183,10 +183,10 @@
                             <field name="line_ids">
                                 <list editable="bottom">
                                     <field name="date"/>
-                                    <field name="planned_quantity"/>
-                                    <field name="actual_quantity"/>
+                                    <field name="planned_quantity" sum="Total Planned Quantity"/>
+                                    <field name="actual_quantity" sum="Total Actual Quantity"/>
                                     <field name="achievement" widget="percentage"/>
-                                    <field name="difference"/>
+                                    <field name="difference" sum="Total Difference"/>
                                     <field name="remark"/>
                                 </list>
                             </field>
