@@ -23,7 +23,7 @@ class AnnualProductionPlanLine(models.Model):
                 ('date_finished', '>=', line.date)
             ]
             mos = self.env['mrp.production'].search(mo_domain)
-            actual_qty = sum(mo.qty_produced for mo in mos)
+            actual_qty = sum(mo.x_annual_plan_qty for mo in mos)
             downtime = 0
             for mo in mos:
                 if hasattr(mo, 'x_studio_one2many_field_RcsDL'):

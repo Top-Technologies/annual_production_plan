@@ -7,7 +7,8 @@
     "description": "Annual production planning for a single product with daily plans and multi-approver workflow.",
     "data": [
         "security/ir.model.access.csv",
-        "views/annual_production_plan_views.xml"
+        "views/annual_production_plan_views.xml",
+        'views/mrp_production_views.xml',
     ],
     "installable": True,
     "application": False,
