@@ -8,7 +8,6 @@
     "data": [
         "security/ir.model.access.csv",
         "views/annual_production_plan_views.xml",
-        'views/mrp_production_views.xml',
     ],
     "installable": True,
     "application": False,

@@ -17,29 +17,13 @@ class AnnualProductionPlanLine(models.Model):
     @api.depends('date', 'plan_id.product_id')
     def compute_actuals(self):
         for line in self:
-            print(f"DEBUG: Computing actuals for line date={line.date}, product={line.plan_id.product_id.name}")
             mo_domain = [
                 ('product_id', '=', line.plan_id.product_id.id),
                 ('state', '=', 'done'),
                 ('date_start', '>=', line.date),  # MO started on or after this day
                 ('date_start', '<', line.date + datetime.timedelta(days=1))  # MO started before next day
             ]
-            print(f"DEBUG: MO domain: {mo_domain}")
             mos = self.env['mrp.production'].search(mo_domain)
-            print(f"DEBUG: Found {len(mos)} MOs")
-            
-            # Also try searching for MOs on the same date (ignoring time)
-            if not mos:
-                print(f"DEBUG: No MOs found with exact date match, trying broader search...")
-                broader_domain = [
-                    ('product_id', '=', line.plan_id.product_id.id),
-                    ('state', '=', 'done'),
-                ]
-                all_mos = self.env['mrp.production'].search(broader_domain)
-                print(f"DEBUG: Found {len(all_mos)} total MOs for this product")
-                for mo in all_mos:
-                    print(f"DEBUG: MO {mo.name}: date_start={mo.date_start}, date_finished={mo.date_finished}, x_annual_plan_qty={mo.x_annual_plan_qty}")
-            
             actual_qty = sum(mo.qty_produced for mo in mos)
             downtime = 0
             for mo in mos:
