@@ -23,7 +23,7 @@
         <field name="arch" type="xml">
             <list string="Annual Production Plans">
                 <field name="name"/>
-                <field name="product_id"/>
+                <field name="product_ids"/>
                 <field name="planned_by_id" optional="show"/>
                 <field name="state"/>
                 <field name="start_date" optional="hide"/>
@@ -66,27 +66,11 @@
         <field name="model">annual.production.plan</field>
         <field name="arch" type="xml">
             <pivot string="Annual Production Analysis">
-                <field name="product_id" type="row"/>
+                <field name="product_ids" type="row"/>
                 <field name="company_id" type="row"/>
                 <field name="total_planned_qty" type="measure"/>
                 <field name="total_actual_qty" type="measure"/>
                 <field name="total_achievement" type="measure"/>
-            </pivot>
-        </field>
-    </record>
-
-    <!-- linie pivot -->
-    <record id="view_annual_production_plan_line_pivot" model="ir.ui.view">
-        <field name="name">annual.production.plan.line.pivot</field>
-        <field name="model">annual.production.plan.line</field>
-        <field name="arch" type="xml">
-            <pivot string="Production Analysis">
-                <field name="date" type="row"/>
-                <field name="plan_id" type="row"/>
-                <field name="remark" type="row"/>
-                <field name="planned_quantity" type="measure"/>
-                <field name="actual_quantity" type="measure"/>
-                <field name="difference" type="measure"/>
             </pivot>
         </field>
     </record>
@@ -96,8 +80,8 @@
         <field name="name">annual.production.plan.graph</field>
         <field name="model">annual.production.plan</field>
         <field name="arch" type="xml">
-            <graph string="Annual Production Graph" type="bar">
-                <field name="product_id" type="row"/>
+            <graph string="Annual Production Graph" type="bar" __validate__="1">
+                <field name="product_ids" type="row"/>
                 <field name="total_planned_qty" type="measure"/>
                 <field name="total_actual_qty" type="measure"/>
             </graph>
@@ -143,7 +127,7 @@
                     <group>
                         <group>
                             <field name="name"/>
-                            <field name="product_id"/>
+                            <field name="product_ids"/>
                             <field name="planned_by_id"/>
                             <field name="approver_ids" widget="many2many_tags"/>
                             <field name="company_id"/>

@@ -8,10 +8,10 @@ class AnnualProductionPlan(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(required=True)
-    product_id = fields.Many2one(
+    product_ids = fields.Many2one(
         'product.product', 
-        string='Product',
-        # domain="[('type', '=', 'product')]",
+        string='Products',
+        domain="[('type', 'in', ['product', 'consu'])]",
         required=True
     )
     
@@ -195,10 +195,13 @@ class AnnualProductionPlan(models.Model):
         while current <= end:
             # Skip Sundays
             if current.weekday() != 6:
-                lines.append((0, 0, {
-                    'date': current,
-                    'planned_quantity': self.daily_production_plan,
-                }))
+                # Create line for each product
+                for product in self.product_ids:
+                    lines.append((0, 0, {
+                        'date': current,
+                        'product_id': product.id,
+                        'planned_quantity': self.daily_production_plan,
+                    }))
             current += timedelta(days=1)
 
         self.write({'line_ids': lines})
