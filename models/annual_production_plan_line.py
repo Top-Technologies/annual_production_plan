@@ -18,31 +18,27 @@ class AnnualProductionPlanLine(models.Model):
     @api.depends('date', 'product_id')
     def compute_actuals(self):
         for line in self:
-            actual_qty = 0
-            
-            # Search for MOs where this product is the main product
-            main_product_mos = self.env['mrp.production'].search([
-                ('product_id', '=', line.product_id.id),
+            # Search for MOs on this date
+            mos = self.env['mrp.production'].search([
                 ('state', '=', 'done'),
                 ('date_start', '>=', line.date),
                 ('date_start', '<', line.date + datetime.timedelta(days=1)),
             ])
-            actual_qty += sum(mo.qty_produced for mo in main_product_mos)
             
-            # Search for MOs where this product appears as a by-product in finished moves
-            byproduct_moves = self.env['stock.move'].search([
-                ('product_id', '=', line.product_id.id),
-                ('state', '=', 'done'),
-                ('move_dest_ids.production_id', '!=', False),
-                ('date', '>=', line.date),
-                ('date', '<', line.date + datetime.timedelta(days=1)),
-            ])
-            actual_qty += sum(move.product_uom_qty for move in byproduct_moves)
+            actual_qty = 0
+            for mo in mos:
+                # Check if this product is the main product of the MO
+                if mo.product_id.id == line.product_id.id:
+                    actual_qty += mo.qty_produced
+                else:
+                    # Only check by-products if this is NOT the main product
+                    for move in mo.move_finished_ids:
+                        if move.product_id.id == line.product_id.id and move.state == 'done':
+                            actual_qty += move.product_uom_qty
             
-            # Calculate downtime for relevant MOs
+            # Calculate downtime (not used in current logic but kept for completeness)
             downtime = 0
-            all_relevant_mos = main_product_mos + byproduct_moves.mapped('move_dest_ids.production_id')
-            for mo in all_relevant_mos:
+            for mo in mos:
                 if hasattr(mo, 'x_studio_one2many_field_RcsDL'):
                     downtime += sum(rec.x_studio_downtimemin for rec in mo.x_studio_one2many_field_RcsDL if hasattr(rec, 'x_studio_downtimemin'))
 
